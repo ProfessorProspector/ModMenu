@@ -1,5 +1,6 @@
 package com.terraformersmc.modmenu.util.mod;
 
+import com.terraformersmc.modmenu.updates.AvailableUpdate;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -36,6 +37,9 @@ public interface Mod {
 
 	@NotNull
 	Set<Badge> getBadges();
+
+	@Nullable
+	AvailableUpdate getAvailableUpdate();
 
 	@Nullable
 	String getWebsite();

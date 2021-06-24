@@ -10,6 +10,7 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import com.terraformersmc.modmenu.config.ModMenuConfig;
 import com.terraformersmc.modmenu.config.ModMenuConfigManager;
 import com.terraformersmc.modmenu.event.ModMenuEventHandler;
+import com.terraformersmc.modmenu.updates.ModUpdateProvider;
 import com.terraformersmc.modmenu.util.ModMenuApiMarker;
 import com.terraformersmc.modmenu.util.mod.Mod;
 import com.terraformersmc.modmenu.util.mod.fabric.FabricDummyParentMod;
@@ -63,6 +64,7 @@ public class ModMenu implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ModMenuConfigManager.initializeConfig();
+		ModUpdateProvider.initializeProviders();
 		Map<String, ConfigScreenFactory<?>> factories = new HashMap<>();
 		FabricLoader.getInstance().getEntrypointContainers("modmenu", ModMenuApiMarker.class).forEach(entrypoint -> {
 			ModMetadata metadata = entrypoint.getProvider().getMetadata();
@@ -138,10 +140,12 @@ public class ModMenu implements ClientModInitializer {
 	public static Text createModsButtonText() {
 		TranslatableText modsText = new TranslatableText("modmenu.title");
 		if (ModMenuConfig.MOD_COUNT_LOCATION.getValue().isOnModsButton() && ModMenuConfig.MODS_BUTTON_STYLE.getValue() != ModMenuConfig.ModsButtonStyle.ICON) {
+			int outdated = ModUpdateProvider.availableUpdates;
+			String outdatedKey = (outdated > 0) ? ".outdated" : "";
 			if (ModMenuConfig.MODS_BUTTON_STYLE.getValue() == ModMenuConfig.ModsButtonStyle.SHRINK) {
 				modsText.append(new LiteralText(" ")).append(new TranslatableText("modmenu.loaded.short", ModMenu.getDisplayedModCount()));
 			} else {
-				modsText.append(new LiteralText(" ")).append(new TranslatableText("modmenu.loaded", ModMenu.getDisplayedModCount()));
+				modsText.append(new LiteralText(" ")).append(new TranslatableText("modmenu.loaded" + outdatedKey, ModMenu.getDisplayedModCount(), outdated));
 			}
 		}
 		return modsText;
